@@ -7,6 +7,8 @@ import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
 /**
@@ -15,6 +17,7 @@ import android.util.Log;
 public class RearGearReceiver   extends BroadcastReceiver {
 
     final String TAG ="ParrotMuteReceiver";
+    public static int phoneState;
 
     boolean savedStreamMuted = false;
     public void onReceive(Context paramContext, Intent paramIntent)
@@ -44,7 +47,8 @@ public class RearGearReceiver   extends BroadcastReceiver {
                 ed.apply();
                 am.setStreamVolume(AudioManager.STREAM_NOTIFICATION, rearVolume, 0 );
                 am.setStreamVolume(AudioManager.STREAM_ALARM, rearVolume, 0 );
-                am.setStreamVolume(AudioManager.STREAM_MUSIC, rearVolume, 0 );
+                if( phoneState != TelephonyManager.CALL_STATE_OFFHOOK )
+                    am.setStreamVolume(AudioManager.STREAM_MUSIC, rearVolume, 0 ); // Mute if not on call now
                 am.setStreamVolume(AudioManager.STREAM_RING, rearVolume, 0 );
                 am.setStreamVolume(AudioManager.STREAM_SYSTEM, rearVolume, 0 );
                 // Log.d( TAG, "muteAudio: NOT="+notif_level+" ALR="+alarm_level+" MUS="+music_level+" RNG="+ring_level+" RV="+rearVolume );
